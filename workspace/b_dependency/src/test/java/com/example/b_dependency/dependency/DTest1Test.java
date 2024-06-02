@@ -13,7 +13,7 @@ class DTest1Test {
 //    @Autowired
 //    private DTest1 dTest1;
 
-    // seeter 주입
+    // setter 주입
 //    private DTest1 dTest1;
 //
 //    @Autowired

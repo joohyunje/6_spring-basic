@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Slf4j
 class BirdMapperTest {
@@ -49,6 +47,28 @@ class BirdMapperTest {
                 .build();
 
         birdMapper.insert(birdVO);
+    }
+
+    @Test
+    void updateByIdTest(){
+        int pk = 1;
+        int updateAge = 10;
+
+        BirdVO vo =
+                BirdVO.builder()
+                        .id(pk)
+                        .age(updateAge)
+                        .build();
+
+        BirdVO updateVO = birdMapper.selectById(pk);
+        updateVO.setAge(updateAge);
+        birdMapper.updateById(updateVO);
+
+    }
+
+    @Test
+    void deleteByIdTest(){
+        birdMapper.deleteById(1);
     }
 
 }

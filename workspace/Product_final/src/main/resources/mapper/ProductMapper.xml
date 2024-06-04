@@ -7,4 +7,10 @@
         select * from product
     </select>
 
+<!--    productList    -->
+    <select id="selectList" resultType="ProductDTO">
+        select id, name from product
+        order by id
+    </select>
+
 </mapper>

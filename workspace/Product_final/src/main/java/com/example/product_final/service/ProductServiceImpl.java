@@ -18,6 +18,10 @@ public class ProductServiceImpl implements ProductService {
     // @Autowired 생략 가능.
     private final ProductMapper productMapper;
 
+//    public ProductServiceImpl(ProductMapper productMapper){
+//        this.productMapper = productMapper;
+//    }
+
     // 전체 물품 리스트를 반환하는 select
     @Override
     public List<ProductDTO> findAll() {

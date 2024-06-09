@@ -1,10 +1,7 @@
 package com.example.product_final.domain.vo;
 
 import com.example.product_final.domain.dto.ProductDTO2;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 @Component

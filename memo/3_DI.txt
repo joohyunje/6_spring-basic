@@ -33,7 +33,7 @@
 	- @EqualsAndHashCode
 	- @NoArgConstructor - 기본 생성자
 	- @AllArgsConstructor - 모든 필드를 매개변수로 가지는 초기화 생성자
-	- @RequiredArgsConstructor - 특정 필드를 배개변수로 가지는 생성자 (final, @NonNull)
+	- @RequiredArgsConstructor - 특정 필드를 매개변수로 가지는 생성자 (final, @NonNull)
 	- @Data - 위에 거 전부 다 적용 (생성자 중에서는 RequiredArgsConstructor 만 만듬)
 
 

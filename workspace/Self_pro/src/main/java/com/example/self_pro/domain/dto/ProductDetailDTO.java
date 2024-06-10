@@ -1,13 +1,13 @@
 package com.example.self_pro.domain.dto;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @NoArgsConstructor
-@Getter
+@Data
 public class ProductDetailDTO {
 
     private Long id;

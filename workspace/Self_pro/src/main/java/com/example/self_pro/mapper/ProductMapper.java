@@ -2,6 +2,7 @@ package com.example.self_pro.mapper;
 
 import com.example.self_pro.domain.dto.ProductDTO;
 import com.example.self_pro.domain.dto.ProductDetailDTO;
+import com.example.self_pro.domain.vo.ProductVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -14,4 +15,7 @@ public interface ProductMapper {
 
 //    물품 상세정보
     ProductDetailDTO selectDetail(Long id);
+
+//    insert
+    void insert(ProductVO product);
 }

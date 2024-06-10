@@ -32,7 +32,6 @@ public class ProductController {
     public String detail(@PathVariable Long id, Model model){
 
         model.addAttribute("product", productService.findDetail(id));
-
         return "product/detail";
     }
 }

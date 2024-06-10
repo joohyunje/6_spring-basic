@@ -14,4 +14,10 @@
         select * from product
         where id = #{id}
     </select>
+
+<!--    insert-->
+    <insert id="insert" parameterType="ProductVO">
+        insert into product
+        values (seq_product.nextval, #{name}, #{price}, #{category}, #{description})
+    </insert>
 </mapper>

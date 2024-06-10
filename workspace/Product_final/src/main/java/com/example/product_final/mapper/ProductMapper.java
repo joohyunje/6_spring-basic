@@ -19,9 +19,12 @@ public interface ProductMapper {
     ProductDetailDTO selectOne(Long id);
 
     // 새 물품 등록 SQL
-    void insert(ProductVO product);
+    int insert(ProductVO product);
 
     // 업데이트
     void update(ProductVO vo);
+
+    // 삭제
+    int delete(Long id);
 
 }

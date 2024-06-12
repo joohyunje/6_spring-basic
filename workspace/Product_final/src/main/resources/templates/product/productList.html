@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -21,11 +21,25 @@
         h1 {
             font-size: 1.5rem;
         }
+
+        .header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="mb-4">Product List</h1>
+    <div class="mb-4 header">
+        <h1>Product List</h1>
+        <a sec:authorize="!isAuthenticated()" th:href="@{/user/login}" class="btn btn-primary">로그인</a>
+        <div sec:authorize="isAuthenticated()">
+            <span sec:authentication="principal.userId"></span>
+            <span>님 환영!</span>
+        </div>
+        <a sec:authorize="isAuthenticated()" th:href="@{/user/logout}" class="btn btn-danger">로그아웃</a>
+    </div>
 
     <div th:if="${msg}" class="alert alert-success alert-dismissible fade show">
         <span th:text="${msg}"></span>

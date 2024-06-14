@@ -86,3 +86,8 @@ select *
 from tbl_users;
 SELECT *
 FROM TBL_COMMENT;
+
+insert into TBL_BOARD
+(BOARD_ID, BOARD_TITLE, BOARD_CONTENT, BOARD_VIEWS, BOARD_REGISTER_DATE, BOARD_UPDATE_DATE,
+ PROVIDER_ID)
+values (seq_board.nextval, '제목', '내용', 1, sysdate, sysdate, '3525144490');

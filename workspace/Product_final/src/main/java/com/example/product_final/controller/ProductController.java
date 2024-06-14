@@ -138,7 +138,7 @@ public class ProductController {
         // html 로 넘겨야하는 값들은 뭐가 있을까
         // 1. 데이터  2. 지금 현재 페이지  3. 페이지 사이즈  4. 총 페이지 수
         // 5. 시작 페이지 수  6. 마지막 페이지 수
-        model.addAttribute("products", products);
+        model.addAttribute("boards", products);
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("totalPages", totalPages);

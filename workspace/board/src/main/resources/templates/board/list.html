@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>게시판 목록</title>
@@ -11,6 +11,11 @@
 
 <div class="content">
     <div class="board-title">게시판 목록</div>
+
+    <div class="write-button-container">
+        <a th:href="@{/board/write}" class="btn-write" sec:authorize="isAuthenticated()">글 작성</a>
+    </div>
+
     <table class="board-table">
         <thead>
         <tr>

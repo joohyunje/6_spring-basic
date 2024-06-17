@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>호근커뮤니티 - 게시글 작성</title>
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/write.css}">
+</head>
+<body>
+
+<div th:replace="~{/layout/header :: header}"></div>
+
+<div id="main" class="container">
+    <header class="head">
+        <h1 class="fw-bold">호근 커뮤니티</h1>
+        <p>게시글 작성</p>
+    </header>
+    <div class="mb-3">
+        <a th:href="@{/board/list}" class="btn-secondary">목록 보기</a>
+    </div>
+    <form method="post" id="myForm" th:action="@{/board/write}" enctype="multipart/form-data" th:object="${board}">
+        <div class="mb-3">
+            <label for="boardTitle" class="form-label">제목</label>
+            <input type="text" class="form-control" id="boardTitle" th:field="*{boardTitle}"
+                   placeholder="Title">
+        </div>
+        <div class="mb-3">
+            <label for="boardContent" class="form-label">내용</label>
+            <textarea class="form-control" id="boardContent" rows="6"
+                      placeholder="Content" style="resize: none;" th:field="*{boardContent}"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="upload" class="form-label">첨부파일</label>
+            <input type="file" class="form-control" id="upload" name="files" multiple>
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn">등록</button>
+        </div>
+        <!--    작성자 정보를 가지고 오는 첫번째 방법    -->
+        <!--    로그인이 되어있어야지만 글 작성이 가능.    -->
+        <!--    DTO 담아서 넘기지 말고 따로 넘기자.    -->
+
+<!--        지금 모델에 담아서 넘겨주는게 아니라서 name을 적어줘야함-->
+       <input type="hidden" th:value="${#authentication.getPrincipal().getProviderId()}" name="providerId">
+    </form>
+</div>
+
+<div th:replace="~{/layout/footer :: footer}"></div>
+
+</body>
+</html>

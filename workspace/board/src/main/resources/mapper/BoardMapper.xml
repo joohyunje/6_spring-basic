@@ -35,4 +35,17 @@
         from tbl_board
     </select>
 
+<!--    다음 시퀀스를 가져오는 쿼리문-->
+<!--    board insert 시 사용할 예정-->
+    <select id="getSeq" resultType="long">
+        select SEQ_BOARD.nextval from dual
+    </select>
+
+<!--    게시글 작성 쿼리문-->
+    <insert id="saveBoard">
+        insert into tbl_board
+        values (#{boardId}, #{boardTitle}, #{boardContent}, 0, sysdate, sysdate, #{providerId})
+    </insert>
+
+
 </mapper>

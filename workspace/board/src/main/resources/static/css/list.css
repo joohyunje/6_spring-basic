@@ -72,3 +72,21 @@ ul, ol {
     pointer-events: none;
     border: 1px solid #ddd;
 }
+
+.write-button-container {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    width: 80%;
+    margin-top: 20px;
+}
+.btn-write {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn-write:hover {
+    background-color: #45A049;
+}

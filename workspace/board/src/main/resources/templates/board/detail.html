@@ -57,8 +57,8 @@
             </label>
         </div>
         <!-- 첨부파일 있을 때만 표시 -->
-        <div th:if="${files}">
-            <div class="mb-3" >
+        <div>
+            <div class="mb-3"  th:if="${not#lists.isEmpty(files)}">
                 <h4>첨부파일</h4>
                 <div class="uploadResult">
                     <ul>

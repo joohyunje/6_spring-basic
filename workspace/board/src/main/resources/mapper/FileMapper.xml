@@ -9,4 +9,18 @@
         VALUES (seq_file.nextval, #{boardId}, #{originalFileName}, #{storedFileName}, #{fileSize}, SYSDATE)
     </insert>
 
+    <!--  게시글 번호로 첨부파일들 가져오기  -->
+    <select id="selectFileList" resultType="FileDTO">
+        select
+            FILE_ID,
+            ORIGINAL_FILE_NAME,
+            STORED_FILE_NAME,
+            FILE_SIZE,
+            UPLOAD_TIME,
+            BOARD_ID
+        from
+            tbl_file
+        where board_id = #{boardId}
+    </select>
+
 </mapper>

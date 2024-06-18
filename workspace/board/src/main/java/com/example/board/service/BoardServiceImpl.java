@@ -1,8 +1,10 @@
 package com.example.board.service;
 
 import com.example.board.domain.dto.BoardDTO;
+import com.example.board.domain.dto.BoardDetailDTO;
 import com.example.board.domain.dto.BoardListDTO;
 import com.example.board.domain.dto.FileDTO;
+import com.example.board.domain.oauth.CustomOAuth2User;
 import com.example.board.domain.vo.FileVO;
 import com.example.board.mapper.BoardMapper;
 import com.example.board.mapper.FileMapper;
@@ -84,5 +86,19 @@ public class BoardServiceImpl implements BoardService {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public BoardDetailDTO getBoardById(Long boardId, CustomOAuth2User customOAuth2User) {
+        BoardDetailDTO board = boardMapper.selectBoardDetail(boardId);
+
+        // 조회 수 상승을 셜정할 if
+        if(customOAuth2User == null || customOAuth2User.getProviderId().equals(board.getProviderId())) {
+            // 조회 수가 플러스 1이 되는 update 쿼리문
+            boardMapper.plusView(boardId);
+        }
+
+        return board;
     }
 }

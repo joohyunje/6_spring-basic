@@ -71,4 +71,19 @@
         where board_Id = #{boardId}
     </update>
 
+<!--    게시글 수정하기    -->
+    <update id="updateBoard">
+        update tbl_board
+        set board_title = #{boardTitle},
+            board_content = #{boardContent},
+            board_update_date = sysdate
+        where board_id = #{boardId}
+    </update>
+
+<!--    게시글 삭제-->
+    <delete id="deleteBoard">
+        delete from tbl_board
+        where board_id = #{boardId}
+    </delete>
+
 </mapper>

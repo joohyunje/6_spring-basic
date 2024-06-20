@@ -14,4 +14,8 @@ public interface FileMapper {
     void insertFile(FileVO fileVO);
 
     List<FileDTO> selectFileList(Long boardId);
+
+    // 첨부파일 DB에서 삭제
+    // 게시글 업데이트 할 때 사용할 예정
+    void deleteFile(Long boardId);
 }

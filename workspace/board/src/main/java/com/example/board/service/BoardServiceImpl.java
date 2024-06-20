@@ -5,6 +5,7 @@ import com.example.board.domain.dto.BoardDetailDTO;
 import com.example.board.domain.dto.BoardListDTO;
 import com.example.board.domain.dto.FileDTO;
 import com.example.board.domain.oauth.CustomOAuth2User;
+import com.example.board.domain.vo.BoardVO;
 import com.example.board.domain.vo.FileVO;
 import com.example.board.mapper.BoardMapper;
 import com.example.board.mapper.FileMapper;
@@ -49,7 +50,43 @@ public class BoardServiceImpl implements BoardService {
         Long boardId = boardMapper.getSeq();
         board.setBoardId(boardId);
         boardMapper.saveBoard(board); // 게시글 정보 저장
+        saveFile(boardId, files);
 
+
+    }
+
+    @Override
+    @Transactional
+    public BoardDetailDTO getBoardById(Long boardId, CustomOAuth2User customOAuth2User) {
+        BoardDetailDTO board = boardMapper.selectBoardDetail(boardId);
+
+        // 조회 수 상승을 셜정할 if
+        if(customOAuth2User == null || customOAuth2User.getProviderId().equals(board.getProviderId())) {
+            // 조회 수가 플러스 1이 되는 update 쿼리문
+            boardMapper.plusView(boardId);
+        }
+
+        return board;
+    }
+
+    // 수정폼으로 갈때 가져갈 원래 게시글 정보
+    @Override
+    public BoardDetailDTO goUpdateBoard(Long boardId) {
+        return boardMapper.selectBoardDetail(boardId);
+    }
+
+    @Override
+    public void updateBoard(BoardDTO board, List<MultipartFile> files) {
+        boardMapper.updateBoard(BoardVO.toEntity(board));
+        // 원래 있던 첨부파일 삭제
+        fileMapper.deleteFile(board.getBoardId());
+        // 그냥 files insert
+        saveFile(board.getBoardId(), files);
+
+    }
+
+    @Override
+    public void saveFile(Long boardId, List<MultipartFile> files) {
         // 현재 날짜를 기반으로 폴더 경로 생성
         LocalDate now = LocalDate.now(); // localDate- 년 월 일
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
@@ -88,17 +125,11 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
+    // 게시글 삭제
     @Override
-    @Transactional
-    public BoardDetailDTO getBoardById(Long boardId, CustomOAuth2User customOAuth2User) {
-        BoardDetailDTO board = boardMapper.selectBoardDetail(boardId);
-
-        // 조회 수 상승을 셜정할 if
-        if(customOAuth2User == null || customOAuth2User.getProviderId().equals(board.getProviderId())) {
-            // 조회 수가 플러스 1이 되는 update 쿼리문
-            boardMapper.plusView(boardId);
-        }
-
-        return board;
+    public void deleteBoard(Long boardId) {
+        boardMapper.deleteBoard(boardId);
     }
+
+
 }

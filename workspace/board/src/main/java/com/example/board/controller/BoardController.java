@@ -79,4 +79,27 @@ public class BoardController {
         return "board/detail";
     }
 
+    // 게시글 수정 폼으로 이동
+    @GetMapping("/edit/{boardId}")
+    public String edit(@PathVariable Long boardId, Model model) {
+        model.addAttribute("board", boardService.goUpdateBoard(boardId));
+
+        return "board/edit";
+    }
+
+    //게시글 수정
+    @PostMapping("/edit")
+    public String edit(BoardDTO board, List<MultipartFile> files) {
+        boardService.updateBoard(board, files);
+
+        return "redirect:/board/detail/" + board.getBoardId();
+    }
+
+    // 게시글 삭제
+    @PostMapping ("/delete/{boardId}")
+    public String delete(@PathVariable Long boardId) {
+        boardService.deleteBoard(boardId);
+        return "redirect:/board/list";
+    }
+
 }

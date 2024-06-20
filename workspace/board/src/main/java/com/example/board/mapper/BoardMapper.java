@@ -3,6 +3,7 @@ package com.example.board.mapper;
 import com.example.board.domain.dto.BoardDTO;
 import com.example.board.domain.dto.BoardDetailDTO;
 import com.example.board.domain.dto.BoardListDTO;
+import com.example.board.domain.vo.BoardVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -29,5 +30,11 @@ public interface BoardMapper {
 
     // 조회수 + 1
     void plusView(Long boardId);
+
+    // 게시글 수정하기
+    void updateBoard(BoardVO boardVO);
+
+    // 게시글 삭제하기
+    void deleteBoard(Long boardId);
 
 }

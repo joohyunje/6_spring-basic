@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/detail.css}">
 </head>
 <body>
-
+<div th:replace="~{/layout/header :: header}"></div>
 <!-- Main -->
 <div id="main" class="container">
     <header class="head">
@@ -71,15 +71,15 @@
             </div>
         </div>
 
-        <div style="text-align: right;">
+        <div sec:authorize="isAuthenticated()">
             <input type="hidden" name="loginId" value="">
-            <!--     로그인 되어있는 객체와 글작성 객체가 동일할 때 표시       -->
-            <button type="button" class="btn btn-primary" onclick="">수정</button>
-            <button type="submit" class="btn btn-danger" onclick="">삭제</button>
+            <div style="text-align: right;" th:if="${#authentication.getPrincipal().getProviderId() == board.providerId}">
+                <!--     로그인 되어있는 객체와 글작성 객체가 동일할 때 표시       -->
+                <button type="button" class="btn btn-primary" onclick="goUpdate()">수정</button>
+                <button type="submit" class="btn btn-danger" onclick="goDelete()">삭제</button>
+            </div>
         </div>
     </div>
-</div>
-
 </div>
 <!-- Comments Section -->
 <div class="comments-section mt-5">
@@ -128,5 +128,6 @@
         </div>
     </div>
 </div>
+<script th:src="@{/js/detail.js}"></script>
 </body>
 </html>

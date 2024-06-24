@@ -17,4 +17,9 @@ public class FileServiceImpl implements FileService {
     public List<FileDTO> getFileListByBoardId(Long boardId) {
         return fileMapper.selectFileList(boardId);
     }
+
+    @Override
+    public FileDTO getFileById(Long fileId) {
+        return fileMapper.getFileById(fileId);
+    }
 }

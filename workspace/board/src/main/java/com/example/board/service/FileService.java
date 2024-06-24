@@ -10,4 +10,6 @@ public interface FileService {
 
     List<FileDTO> getFileListByBoardId(Long boardId);
 
+    FileDTO getFileById(Long fileId);
+
 }

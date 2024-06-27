@@ -9,6 +9,7 @@
 </head>
 <body>
 <div th:replace="~{/layout/header :: header}"></div>
+
 <!-- Main -->
 <div id="main" class="container">
     <header class="head">
@@ -17,54 +18,53 @@
     </header>
 
     <!-- Table -->
-    <div class="content">
+    <div class="content" th:object="${board}">
         <div class="mb-3">
             <div class="form-label">번호</div>
             <label>
-                <input type="text" name="boardId" class="form-control" th:value="${board.boardId}" readonly/>
+                <input type="text" name="boardId" class="form-control" th:value="*{boardId}" readonly/>
             </label>
         </div>
         <div class="mb-3">
             <div class="form-label">제목</div>
             <label>
-                <input type="text" class="form-control" th:value="${board.boardTitle}" readonly/>
+                <input type="text" class="form-control" readonly th:value="*{boardTitle}"/>
             </label>
         </div>
         <div class="mb-3">
             <div class="form-label">내용</div>
             <label>
-                <textarea class="form-control" rows="6" th:text="${board.boardContent}" readonly></textarea>
+                <textarea class="form-control" rows="6" readonly th:text="*{boardContent}"></textarea>
             </label>
         </div>
         <div class="mb-3">
             <div class="form-label">작성자</div>
             <label>
-                <input type="text" class="form-control" th:value="${board.name}" readonly/>
+                <input type="text" class="form-control" readonly th:value="*{name}"/>
             </label>
         </div>
         <div class="mb-3">
             <div class="form-label">작성일</div>
             <label>
                 <input type="text" class="form-control"
-                       th:value="${board.#temporals.format(board.boardRegisterDate, 'yy년 M월 d일 HH시 mm분')}"
-                       readonly/>
+                       readonly th:value="*{#temporals.format(boardRegisterDate, 'yy년 M월 d일')}"/>
             </label>
         </div>
         <div class="mb-3">
-            <label class="form-label" >조회수</label>
+            <label class="form-label">조회수</label>
             <label>
-                <input type="text" class="form-control" th:value="${board.boardViews}" readonly/>
+                <input type="text" class="form-control" readonly th:value="*{boardViews}"/>
             </label>
         </div>
         <!-- 첨부파일 있을 때만 표시 -->
         <div>
-            <div class="mb-3"  th:if="${not#lists.isEmpty(files)}">
+            <div class="mb-3" th:if="${not #lists.isEmpty(files)}" >
                 <h4>첨부파일</h4>
                 <div class="uploadResult">
                     <ul>
-                        <li th:each="file:${files}" th:object="${file}">
-                            <a th:href="@{/download/{fileId}(fileId=${file.fileId})}" th:text="*{originalFileName}">첨부파일1</a>
-                            <span th:text="*{fileSize + ' KB'}">49KB</span>
+                        <li th:each="file : ${files}">
+                            <a th:href="@{/download/{fileId}(fileId=${file.fileId})}" th:text="${file.originalFileName}" ></a>
+                            <span th:text="${file.fileSize / 1024 + ' KB'}" ></span>
                         </li>
                     </ul>
                 </div>
@@ -72,7 +72,7 @@
         </div>
 
         <div sec:authorize="isAuthenticated()">
-            <input type="hidden" name="loginId" value="">
+            <input type="hidden" name="loginId" th:value="${#authentication.getPrincipal().getProviderId()}">
             <div style="text-align: right;" th:if="${#authentication.getPrincipal().getProviderId() == board.providerId}">
                 <!--     로그인 되어있는 객체와 글작성 객체가 동일할 때 표시       -->
                 <button type="button" class="btn btn-primary" onclick="goUpdate()">수정</button>
@@ -87,7 +87,7 @@
 
     <!--  로그인 되어 있을 때만 표시  -->
     <div>
-        <div class="comment-form mt-4">
+        <div class="comment-form mt-4" sec:authorize="isAuthenticated()">
             <form id="commentForm" method="post">
                 <div class="mb-3">
                     <label for="commentContent" class="form-label">댓글 남기기</label>
@@ -95,39 +95,16 @@
                               placeholder="여기에 댓글을 입력하세요..."></textarea>
                 </div>
                 <button type="button" class="btn btn-primary" onclick="addComment()"
-                        style="margin-bottom: 20px">댓글 작성</button>
+                        style="margin-bottom: 20px" >댓글 작성</button>
             </form>
         </div>
     </div>
 
     <div class="comment-list mt-4">
         <!-- 댓글 목록을 동적으로 추가. -->
-        <div class="comment-card">
-            <div class="comment-body">
-                <div class="comment-title">작성자 이름</div>
-                <div class="comment-subtitle">2024년 8월 29일</div>
-                <p class="comment-text">댓글 본문</p>
-                <!-- 수정, 삭제 버튼 -->
-                <div class="comment-actions">
-                    <button onclick="" class="btn btn-primary">수정</button>
-                    <button onclick="" class="btn btn-danger">삭제</button>
-                </div>
-            </div>
-        </div>
-        <div class="comment-card">
-            <div class="comment-body">
-                <div class="comment-title">작성자 이름</div>
-                <div class="comment-subtitle">2024년 8월 29일</div>
-                <p class="comment-text">댓글 본문</p>
-                <!-- 수정, 삭제 버튼 -->
-                <div class="comment-actions">
-                    <button onclick="" class="btn btn-primary">수정</button>
-                    <button onclick="" class="btn btn-danger">삭제</button>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script th:src="@{/js/detail.js}"></script>
 </body>
 </html>

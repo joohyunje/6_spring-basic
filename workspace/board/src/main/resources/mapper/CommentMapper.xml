@@ -12,4 +12,23 @@
         order by comment_update_date desc
     </select>
 
+<!--    특정 게시글에 댓글 추가   -->
+    <insert id="insertComment">
+        insert into TBL_COMMENT (COMMENT_ID, BOARD_ID, PROVIDER_ID, COMMENT_CONTENT, COMMENT_REGISTER_DATE, COMMENT_UPDATE_DATE)
+        values (seq_comment.nextval, #{boardId}, #{providerId}, #{commentContent}, sysdate, sysdate)
+    </insert>
+
+<!--    댓글 삭제   -->
+    <delete id="deleteComment">
+        delete from tbl_comment
+        where comment_id = #{commentId}
+    </delete>
+
+<!--    댓글 수정   -->
+    <update id="updateComment">
+        update tbl_comment
+        set comment_content = #{commentContent}, comment_update_date = sysdate
+        where comment_id = #{commentId}
+    </update>
 </mapper>
+

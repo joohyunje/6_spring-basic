@@ -100,16 +100,16 @@ function getComments(boardId) {
                 if(loginId === comment.providerId){
                     buttons = `
                         <div class="comment-actions">
-                            <button onclick="" class="btn btn-primary">수정</button>
-                            <button onclick="" class="btn btn-danger">삭제</button>
+                            <button onclick="updateComment(${comment.commentId})" class="btn btn-primary">수정</button>
+                            <button onclick="deleteComment(${comment.commentId})" class="btn btn-danger">삭제</button>
                         </div>
                     `
                 }
 
                 // 종합적으로 뿌려줄 html
                 let commentElement = `
-                    <div class="comment-card">
-                        <div class="comment-body">
+                    <div class="comment-card" id="comment-${comment.commentId}">
+                        <div class="comment-body" >
                             <div class="comment-title">${comment.name}</div>
                             <div class="comment-subtitle">${commentDate}${editStr}</div>
                             <p class="comment-text">${comment.commentContent}</p>
@@ -151,12 +151,81 @@ function addComment(){
         }),
         success : function(data) {
             $('#commentContent').val('');
-            getComments(boardId);
+            getComments($('input[name="boardId"]').val());
         },
         error : function(data) {
             console.error(data);
         }
     })
+}
+
+// 댓글 삭제
+function deleteComment(commentId){
+    // 매개 변수로 pk 잘 넘어왔는지 확인.
+    // alert(commentId)
+    // console.log(commentId)
+
+    if(!confirm('정말로 삭제하시겠습니까?')){
+        return;
+    }
+
+    $.ajax({
+        method : 'delete',
+        url : '/comments/' + commentId,
+        success : function(data) {
+            console.log(data, '삭제 성공')
+            getComments($('input[name="boardId"]').val());
+        },
+        error : function(data) {
+            console.error(data, '삭제 실패')
+        }
+    })
+}
+
+// 댓글 수정 폼 생성 함수
+function createEditForm(commentId, currentContent){
+    return `
+        <div class="mb-3">
+            <textarea class="form-control comment-edit-content" rows="3">${currentContent}</textarea>
+        </div>
+        <button class="btn btn-primary" onClick="editComment(${commentId})">수정완료</button>
+        <button class="btn btn-secondary" onClick="cancelEdit()">취소</button>
+    `;
+}
+
+// 수정 삭제 버튼 중 수정을 눌렀을 때
+function updateComment(commentId) {
+    // 기존 댓글 내용을 가지고 와서, 수정 폼에 넣는다.
+    let comment = $(`#comment-${commentId}`);
+    let content = comment.find('.comment-text').text()
+    comment.find('.comment-body').html(createEditForm(commentId, content))
+}
+
+// 수정 완료 버튼 눌렀을 때
+function editComment(commentId){
+    let comment = $(`#comment-${commentId}`);
+    let updateContent = comment.find('.comment-edit-content').val()
+
+    $.ajax({
+        method : 'put',
+        url : '/comments/' + commentId,
+        contentType: 'application/json',
+        data: JSON.stringify({
+            commentContent : updateContent
+        }),
+        success : function(data) {
+            console.log('수정 성공')
+            getComments($('input[name="boardId"]').val());
+        },
+        error : function(data) {
+            console.log('수정 삭제')
+        }
+    })
+}
+
+// 취소 버튼 눌렀을 때
+function cancelEdit(){
+    getComments($('input[name="boardId"]').val());
 }
 
 

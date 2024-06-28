@@ -37,4 +37,13 @@ public interface BoardMapper {
     // 게시글 삭제하기
     void deleteBoard(Long boardId);
 
+    // 게시글 오래된 순
+    List<BoardListDTO> selectAllByDateASC(int startRow, int endRow);
+
+    // 게시글 조회순
+    List<BoardListDTO> selectAllByViews(int startRow, int endRow);
+
+    // 동적 쿼리
+    List<BoardListDTO> selectD(int startRow, int endRow, String sort);
+
 }

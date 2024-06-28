@@ -86,4 +86,93 @@
         where board_id = #{boardId}
     </delete>
 
+
+
+<!--    검색과 정렬을 페이지 이동 업시 하는 쿼리문들   -->
+<!--    오래된 순   -->
+    <!--  게시글 오래된 순  -->
+    <select id="selectAllByDateASC" resultType="BoardListDTO">
+        SELECT *
+        FROM (
+                 SELECT ROWNUM AS RN, BOARD.*
+                 FROM (
+                          SELECT
+                              B.BOARD_ID,
+                              B.BOARD_TITLE,
+                              U.NAME,
+                              B.BOARD_VIEWS,
+                              B.BOARD_REGISTER_DATE,
+                              B.BOARD_UPDATE_DATE,
+                              U.PROVIDER_ID,
+                              (SELECT COUNT(*) FROM TBL_FILE F WHERE F.BOARD_ID = B.BOARD_ID) AS FILE_COUNT
+                          FROM
+                              TBL_BOARD B JOIN TBL_USERS U
+                                               ON
+                                                   U.PROVIDER_ID = B.PROVIDER_ID
+                          ORDER BY
+                              B.BOARD_UPDATE_DATE ASC
+                      ) BOARD
+                 WHERE ROWNUM &lt;= #{endRow}
+             )
+        WHERE rn &gt; #{startRow}
+    </select>
+
+    <!--  게시글 조회 순  -->
+    <select id="selectAllByViews" resultType="BoardListDTO">
+        SELECT *
+        FROM (
+                 SELECT ROWNUM AS RN, BOARD.*
+                 FROM (
+                          SELECT
+                              B.BOARD_ID,
+                              B.BOARD_TITLE,
+                              U.NAME,
+                              B.BOARD_VIEWS,
+                              B.BOARD_REGISTER_DATE,
+                              B.BOARD_UPDATE_DATE,
+                              U.PROVIDER_ID,
+                              (SELECT COUNT(*) FROM TBL_FILE F WHERE F.BOARD_ID = B.BOARD_ID) AS FILE_COUNT
+                          FROM
+                              TBL_BOARD B JOIN TBL_USERS U
+                                               ON
+                                                   U.PROVIDER_ID = B.PROVIDER_ID
+                          ORDER BY
+                              B.BOARD_VIEWS DESC
+                      ) BOARD
+                 WHERE ROWNUM &lt;= #{endRow}
+             )
+        WHERE rn &gt; #{startRow}
+    </select>
+
+    <!-- 동적 쿼리 -->
+    <select id="selectD" resultType="BoardListDTO">
+        SELECT *
+        FROM (
+            SELECT ROWNUM AS RN, BOARD.*
+            FROM (
+                SELECT
+                    B.BOARD_ID,
+                    B.BOARD_TITLE,
+                    U.NAME,
+                    B.BOARD_VIEWS,
+                    B.BOARD_REGISTER_DATE,
+                    B.BOARD_UPDATE_DATE,
+                    U.PROVIDER_ID,
+                    (SELECT COUNT(*) FROM TBL_FILE F WHERE F.BOARD_ID = B.BOARD_ID) AS FILE_COUNT
+                FROM
+                    TBL_BOARD B JOIN TBL_USERS U
+                    ON
+                    U.PROVIDER_ID = B.PROVIDER_ID
+                ORDER BY
+                    <choose>
+                        <when test="sort == 'views'">B.BOARD_VIEWS DESC</when>
+                        <when test="sort == 'oldest'">B.BOARD_UPDATE_DATE ASC</when>
+                        <otherwise>B.BOARD_UPDATE_DATE DESC</otherwise>
+                    </choose>
+            ) BOARD
+            WHERE ROWNUM &lt;= #{endRow}
+        )
+        WHERE rn &gt; #{startRow}
+    </select>
+
 </mapper>

@@ -102,4 +102,9 @@ public class BoardController {
         return "redirect:/board/list";
     }
 
+    @GetMapping("/rest")
+    public String rest() {
+        return "board/restList";
+    }
+
 }

@@ -64,6 +64,43 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
     const pageSize = 10;
+    let sortOption = 'newest';
+
+    // 처음 페이지가 로드 될 때 실행될 함수
+    $(document).ready(function(){
+        getList(1);
+    })
+
+    // 날짜 포맷
+    function formatDate(dateString) {
+        const now = new Date();
+        const commentDate = new Date(dateString); // 문자열을 Date 객체로 변환
+
+        const nowYear = now.getFullYear();
+        const nowMonth = now.getMonth();
+        const nowDate = now.getDate();
+
+        const commentYear = commentDate.getFullYear();
+        const commentMonth = commentDate.getMonth();
+        const commentDateDate = commentDate.getDate();
+
+        let displayText = "";
+
+        // 년, 월, 일이 모두 같은 경우 "오늘"로 표시
+        // if (nowYear === commentYear && nowMonth === commentMonth && nowDate === commentDateDate) {
+        //     displayText = "오늘";
+        // } else {
+        // 그 외의 경우, 정해진 포맷으로 표시
+        const yy = commentYear.toString().slice(-2); // 마지막 두 자리를 가지고 옴.
+        const M = commentMonth + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
+        const d = commentDateDate;
+        const HH = commentDate.getHours().toString().padStart(2, '0');
+        const mm = commentDate.getMinutes().toString().padStart(2, '0'); // 두자리 수 일 때 앞에 0을 붙임.
+
+        displayText = `${yy}년 ${M}월 ${d}일 ${HH}시 ${mm}분`;
+        // }
+        return displayText;
+    }
 
     function getList(page){
         $.ajax({
@@ -72,15 +109,79 @@
             data : {
                 page : page,
                 size : pageSize,
-                sort :
+                sort : sortOption
             },
-            success : function (data){
+            success:function (data){
                 // 리스트 뿌려주는 함수.
+                renderBoard(data.content);
+                renderPagination(data);
             },
-            error : function (data){
-                console.log('실패')
+            error:function (){
+                console.error('실패')
             }
         })
+    };
+
+    // 라디오 버튼 변경 이벤트
+    $('input[name="sort-option"]').change(function (){
+        sortOption = $(this).val();
+        getList(1);
+    })
+
+    // 리스트 데이터를 받아서 랜더링 하는 함수.
+    function renderBoard(boards){
+        const boardContainer = $('.table tbody');
+        boardContainer.empty();
+
+        boards.forEach(function(board) {
+            let boardRow = `<tr><td>${board.boardId}</td>
+            <td><a href="/board/detail/${board.boardId}"></a>${board.boardTitle}${board.fileCount}</td>
+            <td>${board.name}</td>
+            <td>${board.boardViews}</td>
+            <td>${formatDate(board.boardRegisterDate)}</td></tr>`;
+            boardContainer.append(boardRow);
+        });
+    }
+
+    // 페이징 처리 영역
+    function renderPagination(pagination) {
+        const paginationContainer = $('.pagination');
+        paginationContainer.empty();
+
+        // 이전 버튼
+        const prevDisabled = pagination.currentPage === 1 ? 'disabled' : '';
+        paginationContainer.append(`
+            <li class="page-item ${prevDisabled}">
+                <a class="page-link" href="#" aria-label="Previous" data-page="${pagination.currentPage - 1}">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        `);
+
+        for (let i = pagination.startPage; i <= pagination.endPage; i++) {
+            const activeClass = pagination.currentPage === i ? 'active' : '';
+            paginationContainer.append(`
+            <li class="page-item ${activeClass}">
+                <a class="page-link" href="#" data-page="${i}">${i}</a>
+            </li>
+        `);
+        }
+
+        const nextDisabled = pagination.currentPage === pagination.totalPages ? 'disabled' : '';
+        paginationContainer.append(`
+            <li class="page-item ${nextDisabled}">
+                <a class="page-link" href="#" aria-label="Next" data-page="${pagination.currentPage + 1}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        `);
+
+        // 페이지 클릭했을 때 실행할 함수.
+        $('.page-link').click(function(event) {
+            event.preventDefault();
+            const selectedPage = $(this).data('page');
+            getList(selectedPage);
+        });
     }
 
 </script>

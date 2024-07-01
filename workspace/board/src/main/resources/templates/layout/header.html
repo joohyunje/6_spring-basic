@@ -19,7 +19,7 @@
     <div class="nav-bar">
         <a th:href="@{/}">홈</a>
         <a th:href="@{/board/list}">게시판 목록</a>
-        <a href="#">기능1</a>
+        <a th:href="@{/board/rest}">정렬 및 검색</a>
         <div sec:authorize="!isAuthenticated()">
             <a href="/oauth2/authorization/kakao">로그인</a>
         </div>

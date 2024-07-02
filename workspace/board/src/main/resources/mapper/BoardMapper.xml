@@ -163,6 +163,14 @@
                     TBL_BOARD B JOIN TBL_USERS U
                     ON
                     U.PROVIDER_ID = B.PROVIDER_ID
+                <where>
+                    <if test = "search != null">
+                        <choose>
+                            <when test="searchType == 'title'">B.BOARD_TITLE LIKE '%' || #{search} || '%'</when>
+                            <when test="searchType == 'content'">B.BOARD_CONTENT LIKE '%' || #{search} || '%'</when>
+                        </choose>
+                    </if>
+                </where>
                 ORDER BY
                     <choose>
                         <when test="sort == 'views'">B.BOARD_VIEWS DESC</when>
@@ -173,6 +181,20 @@
             WHERE ROWNUM &lt;= #{endRow}
         )
         WHERE rn &gt; #{startRow}
+    </select>
+
+<!--    총 게시글의 갯수 검색어까지 포함.-->
+    <select id="countDBoard">
+        select count(*)
+        from tbl_board
+        <where>
+            <if test = "search != null">
+                <choose>
+                    <when test="searchType == 'title'">BOARD_TITLE LIKE '%' || #{search} || '%'</when>
+                    <when test="searchType == 'content'">BOARD_CONTENT LIKE '%' || #{search} || '%'</when>
+                </choose>
+            </if>
+        </where>
     </select>
 
 </mapper>

@@ -9,10 +9,10 @@
         where provider_id = #{providerId}
     </select>
 
-    <!-- 사용자 정보 저장 -->
+    <!--  사용자 정보 저장  -->
     <insert id="saveUser">
-        insert into tbl_users
-        values  (#{name}, #{profilePic}, #{provider}, #{providerId}, sysdate, sysdate)
+        insert into tbl_users (name, profile_pic, provider, provider_id, create_at, update_at, role)
+        values (#{name}, #{profilePic}, #{provider}, #{providerId}, sysdate, sysdate, #{role})
     </insert>
 
     <!-- 사용자 정보 업데이트 -->
@@ -20,6 +20,13 @@
         update tbl_users
         set name = #{name}, profile_pic = #{profilePic}, update_at = sysdate
         where provider_id = #{providerId}
+    </update>
+
+    <!-- 새로운 사람 회원 가입 -->
+    <update id="insertNewUser">
+        update tbl_users
+        set PHONE_NUMBER = #{phoneNumber}, ADDRESS = #{address}, ROLE = #{role}
+        where PROVIDER_ID = #{providerId}
     </update>
 
 </mapper>

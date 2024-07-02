@@ -13,12 +13,12 @@ import java.util.List;
 @Service
 public interface BoardService {
 
-    // 페이징 처리할 때 사용할 쿼리
-    List<BoardListDTO> selectPaging(int pageNo, int pageSize);
+    // 페이징 처리된 게시글 목록
+    List<BoardListDTO> getBoardList(int page, int pageSize);
 
     // 게시판 총 갯수
     // 페이징 처리할 때 사용할 쿼리
-    int countBoard();
+    int getBoardListCount();
 
     // 게시글 작성
     // 첨부파일도 insert
@@ -31,13 +31,13 @@ public interface BoardService {
     BoardDetailDTO goUpdateBoard(Long boardId);
 
     // 게시글 업데이트
-    // 수정하기를 누르면, 첨부파일은 초기화가 되게끔 구현
+    // 수정하기를 누르면, 첨부파일은 초기화가 되게끔 구현.
     void updateBoard(BoardDTO board, List<MultipartFile> files);
 
     // 첨부파일 추가하는 메소드
     void saveFile(Long boardId, List<MultipartFile> files);
 
-    // 삭제하기
+    // 게시글 삭제
     void deleteBoard(Long boardId);
 
     // 최신순
@@ -50,6 +50,5 @@ public interface BoardService {
     PagedResponse<BoardListDTO> selectAllByViews(int page, int pageSize);
 
     // 동적 쿼리
-    PagedResponse<BoardListDTO> selectD(int page, int pageSize, String sort);
-
+    PagedResponse<BoardListDTO> selectD(int page, int pageSize, String sort, String searchType, String search);
 }

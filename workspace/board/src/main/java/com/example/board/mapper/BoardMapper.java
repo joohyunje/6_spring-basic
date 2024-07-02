@@ -19,7 +19,7 @@ public interface BoardMapper {
     int countBoard();
 
     // 다음 시퀀스 가져오기
-    // 게시글 작성때 사용할 쿼리
+    // 게시글 작성 때 사용할 쿼리
     long getSeq();
 
     // 게시글 작성
@@ -28,7 +28,7 @@ public interface BoardMapper {
     // 게시글 상세보기
     BoardDetailDTO selectBoardDetail(Long boardId);
 
-    // 조회수 + 1
+    // 조회 수 +1
     void plusView(Long boardId);
 
     // 게시글 수정하기
@@ -43,7 +43,10 @@ public interface BoardMapper {
     // 게시글 조회순
     List<BoardListDTO> selectAllByViews(int startRow, int endRow);
 
-    // 동적 쿼리
-    List<BoardListDTO> selectD(int startRow, int endRow, String sort);
 
+    // 동적 쿼리
+    List<BoardListDTO> selectD(int startRow, int endRow, String sort, String searchType, String search);
+
+    // 동적 쿼리 시, 게시글 갯수
+    int countDBoard(String searchType, String search);
 }

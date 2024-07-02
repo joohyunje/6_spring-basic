@@ -32,16 +32,16 @@ public class BoardServiceImpl implements BoardService {
     private final FileMapper fileMapper;
 
     @Override
-    public List<BoardListDTO> selectPaging(int pageNo, int pageSize) {
+    public List<BoardListDTO> getBoardList(int page, int pageSize) {
 
-        int startRow = (pageNo - 1) * pageSize;
-        int endRow = pageNo * pageSize;
+        int startRow = (page - 1) * pageSize;
+        int endRow = page * pageSize;
 
         return boardMapper.selectAll(startRow, endRow);
     }
 
     @Override
-    public int countBoard() {
+    public int getBoardListCount() {
         return boardMapper.countBoard();
     }
 
@@ -51,9 +51,8 @@ public class BoardServiceImpl implements BoardService {
         Long boardId = boardMapper.getSeq();
         board.setBoardId(boardId);
         boardMapper.saveBoard(board); // 게시글 정보 저장
+
         saveFile(boardId, files);
-
-
     }
 
     @Override
@@ -61,16 +60,15 @@ public class BoardServiceImpl implements BoardService {
     public BoardDetailDTO getBoardById(Long boardId, CustomOAuth2User customOAuth2User) {
         BoardDetailDTO board = boardMapper.selectBoardDetail(boardId);
 
-        // 조회 수 상승을 셜정할 if
-        if(customOAuth2User == null || customOAuth2User.getProviderId().equals(board.getProviderId())) {
+        // 조회 수 상승을 결정할 if
+        if(customOAuth2User == null || !customOAuth2User.getProviderId().equals(board.getProviderId())){
             // 조회 수가 플러스 1이 되는 update 쿼리문
             boardMapper.plusView(boardId);
         }
-
         return board;
     }
 
-    // 수정폼으로 갈때 가져갈 원래 게시글 정보
+    // 수정 폼으로 이동할 때 가지고갈 board select
     @Override
     public BoardDetailDTO goUpdateBoard(Long boardId) {
         return boardMapper.selectBoardDetail(boardId);
@@ -81,30 +79,29 @@ public class BoardServiceImpl implements BoardService {
         boardMapper.updateBoard(BoardVO.toEntity(board));
         // 원래 있던 첨부파일 삭제
         fileMapper.deleteFile(board.getBoardId());
+
         // 그냥 files insert
         saveFile(board.getBoardId(), files);
-
     }
 
     @Override
     public void saveFile(Long boardId, List<MultipartFile> files) {
         // 현재 날짜를 기반으로 폴더 경로 생성
-        LocalDate now = LocalDate.now(); // localDate- 년 월 일
+        LocalDate now = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         String datePath = now.format(formatter);
 
         for (MultipartFile file : files) {
-            // 방어코드. 혹시 모르는 것을 방지 하기 위해
+            // 방어코드
             if (file.isEmpty()) continue; // 파일이 비어있으면 건너뜀
 
-            String originalFileName = file.getOriginalFilename(); // 내가 정해줬던 실제 파일 이름
-            // 다운로드 할 때 사용할 이름 만들기
+            String originalFileName = file.getOriginalFilename();
             String storedFileName = UUID.randomUUID().toString().replaceAll("-", "") + "_" + originalFileName;
             Long fileSize = file.getSize();
 
             try {
                 // 파일 저장 경로 설정
-                Path directoryPath = Paths.get("/Users/hyunje/upload/" + datePath);
+                Path directoryPath = Paths.get("C:/upload/" + datePath);
                 if (!Files.exists(directoryPath)) {
                     Files.createDirectories(directoryPath); // 폴더가 없으면 생성
                 }
@@ -126,13 +123,10 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
-    // 게시글 삭제
     @Override
     public void deleteBoard(Long boardId) {
         boardMapper.deleteBoard(boardId);
     }
-
-
 
     // 최신순
     @Override
@@ -145,7 +139,6 @@ public class BoardServiceImpl implements BoardService {
         int totalPages = (int) Math.ceil((double)totalBoards/pageSize);
 
         int pageGroupSize = 5;
-
 
         int startPage = ((page - 1) / pageGroupSize) * pageGroupSize + 1;
         int endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
@@ -166,7 +159,6 @@ public class BoardServiceImpl implements BoardService {
 
         int pageGroupSize = 5;
 
-
         int startPage = ((page - 1) / pageGroupSize) * pageGroupSize + 1;
         int endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
 
@@ -186,7 +178,6 @@ public class BoardServiceImpl implements BoardService {
 
         int pageGroupSize = 5;
 
-
         int startPage = ((page - 1) / pageGroupSize) * pageGroupSize + 1;
         int endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
 
@@ -195,22 +186,16 @@ public class BoardServiceImpl implements BoardService {
         return new PagedResponse<>(boards, page, totalPages, pageSize, totalBoards);
     }
 
-    // 동적 쿼리
     @Override
-    public PagedResponse<BoardListDTO> selectD(int page, int pageSize, String sort) {
+    public PagedResponse<BoardListDTO> selectD(int page, int pageSize, String sort, String searchType, String search) {
+
         int startRow = (page - 1) * pageSize;
         int endRow = page * pageSize;
 
-        int totalBoards = boardMapper.countBoard();
+        int totalBoards = boardMapper.countDBoard(searchType, search);
         int totalPages = (int) Math.ceil((double)totalBoards/pageSize);
 
-        int pageGroupSize = 5;
-
-
-        int startPage = ((page - 1) / pageGroupSize) * pageGroupSize + 1;
-        int endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
-
-        List<BoardListDTO> boards = boardMapper.selectD(startRow, endRow, sort);
+        List<BoardListDTO> boards = boardMapper.selectD(startRow, endRow, sort, searchType, search);
 
         return new PagedResponse<>(boards, page, totalPages, pageSize, totalBoards);
     }

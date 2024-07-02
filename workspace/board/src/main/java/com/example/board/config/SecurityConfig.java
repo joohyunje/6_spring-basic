@@ -1,5 +1,8 @@
 package com.example.board.config;
 
+import com.example.board.domain.dto.UsersDTO;
+import com.example.board.domain.oauth.CustomOAuth2User;
+import com.example.board.mapper.UsersMapper;
 import com.example.board.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +19,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final UsersMapper usersMapper;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -25,8 +29,6 @@ public class SecurityConfig {
 //                .build();
 
         return http
-                // cross-site request forgery
-                // csrf 보호기능을 비활성화하느것
                 .csrf(AbstractHttpConfigurer::disable)
                 // 요청에 대한 인증 및 인가를 설정.
                 .authorizeHttpRequests(auth -> auth
@@ -40,14 +42,12 @@ public class SecurityConfig {
                 )
 
                 .logout(logout -> logout
-                                .logoutSuccessHandler((request, response, authentication) -> {
-                                    //
-//                            String clientId = request.getParameter("ClientId");
-                                    String clientId = "305292b35807aedaa7f105adeec59bb8";
-                                    String logoutRedirectUri = "http://localhost:8090";
-                                    String logoutUri = "https://kauth.kakao.com/oauth/logout?client_id=" + clientId + "&logout_redirect_uri=" + logoutRedirectUri;
-                                    response.sendRedirect(logoutUri);
-                                })
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            String clientId = "305292b35807aedaa7f105adeec59bb8";
+                            String logoutRedirectUri = "http://localhost:8090";
+                            String logoutUri = "https://kauth.kakao.com/oauth/logout?client_id=" + clientId + "&logout_redirect_uri=" + logoutRedirectUri;
+                            response.sendRedirect(logoutUri);
+                        })
                 )
                 .build();
     }
@@ -55,8 +55,17 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, auth) -> {
+            CustomOAuth2User customOAuth2User = (CustomOAuth2User)auth.getPrincipal();
 
-            response.sendRedirect("/");
+            UsersDTO user = usersMapper.findByProviderId(customOAuth2User.getProviderId());
+
+
+            if(user.getRole().equals("new")){
+                response.sendRedirect("/board/join");
+            }
+            else {
+                response.sendRedirect("/board/list");
+            }
         };
     }
 

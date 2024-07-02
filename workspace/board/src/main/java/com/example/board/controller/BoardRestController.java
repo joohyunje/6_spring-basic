@@ -20,7 +20,11 @@ public class BoardRestController {
     @GetMapping
     public ResponseEntity<PagedResponse<BoardListDTO>> getBoardList(@RequestParam(defaultValue = "1") int page,
                                                                     @RequestParam(defaultValue = "10") int size,
-                                                                    @RequestParam(defaultValue = "") String sort) {
+                                                                    @RequestParam(defaultValue = "") String sort,
+                                                                    @RequestParam(value="searchType") String searchType,
+                                                                    @RequestParam String search) {
+
+        System.out.println(sort);
 
 //        PagedResponse<BoardListDTO> sortedBoards = switch (sort){
 //            case "oldest" -> boardService.selectAllByDateASC(page, size);
@@ -28,7 +32,7 @@ public class BoardRestController {
 //            default -> boardService.selectAllByDateDESC(page, size);
 //        };
 
-        return ResponseEntity.ok(boardService.selectD(page, size, sort));
+        return ResponseEntity.ok(boardService.selectD(page, size, sort, searchType, search));
     }
 
 }

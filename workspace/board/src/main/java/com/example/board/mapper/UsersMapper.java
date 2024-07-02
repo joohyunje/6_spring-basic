@@ -13,4 +13,6 @@ public interface UsersMapper {
 
     void updateUser(UsersVO vo);
 
+    void insertNewUser(UsersVO vo);
+
 }

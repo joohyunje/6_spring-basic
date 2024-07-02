@@ -17,7 +17,7 @@
         <input type="radio" id="sort-newest" name="sort-option" value="newest" checked>
         <label for="sort-newest">최신순</label>
 
-        <input type="radio" id="sort-oldest" name="sort-option" value="oldest">
+        <input type="radio" id="sort-oldest" name="sort-option" value="oldest" >
         <label for="sort-oldest">오래된 순</label>
 
         <input type="radio" id="sort-views" name="sort-option" value="views">
@@ -64,12 +64,18 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
     const pageSize = 10;
-    let sortOption = 'newest';
+    let sortOption = '';
+    let search = null;
+    let searchType = null;
 
     // 처음 페이지가 로드 될 때 실행될 함수
-    $(document).ready(function(){
+    window.onload = function(){
+        searchType = $('select[name="search-type"]').val();
+        search = $('input[name="search"]').val();
+        $('input[id="sort-newest"]').prop('checked', true);
+
         getList(1);
-    })
+    }
 
     // 날짜 포맷
     function formatDate(dateString) {
@@ -109,7 +115,9 @@
             data : {
                 page : page,
                 size : pageSize,
-                sort : sortOption
+                sort : sortOption,
+                searchType : searchType,
+                search : search
             },
             success:function (data){
                 // 리스트 뿌려주는 함수.
@@ -134,8 +142,10 @@
         boardContainer.empty();
 
         boards.forEach(function(board) {
+            let fileString = board.fileCount > 0 ? `  [첨부파일:${board.fileCount}]` : '';
+
             let boardRow = `<tr><td>${board.boardId}</td>
-            <td><a href="/board/detail/${board.boardId}"></a>${board.boardTitle}${board.fileCount}</td>
+            <td><a href="/board/detail/${board.boardId}">${board.boardTitle}${fileString}</a></td>
             <td>${board.name}</td>
             <td>${board.boardViews}</td>
             <td>${formatDate(board.boardRegisterDate)}</td></tr>`;
@@ -182,6 +192,12 @@
             const selectedPage = $(this).data('page');
             getList(selectedPage);
         });
+    }
+
+    function saveKeyword(){
+        searchType = $('select[name="search-type"]').val();
+        search = $('input[name="search"]').val();
+        getList(1);
     }
 
 </script>

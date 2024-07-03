@@ -6,6 +6,7 @@
     <title>호근커뮤니티 - 게시글 작성</title>
     <link rel="stylesheet" th:href="@{/css/layout.css}">
     <link rel="stylesheet" th:href="@{/css/write.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -32,7 +33,7 @@
         </div>
         <div class="mb-3">
             <label for="upload" class="form-label">첨부파일</label>
-            <input type="file" class="form-control" id="upload" name="files" multiple>
+            <input type="file" class="form-control" id="upload" name="boardfiles" multiple>
         </div>
         <div class="d-grid">
             <button type="submit" class="btn">등록</button>
@@ -47,6 +48,57 @@
 </div>
 
 <!--<div th:replace="~{/layout/footer :: footer}"></div>-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        initializeSummernote();
+    });
+
+    function initializeSummernote() {
+        $('#boardContent').summernote({
+            tabsize: 2,
+            placeholder: '내용을 입력하세요...',
+            callbacks: {
+                onImageUpload: function(files) {
+                    for (let i = 0; i < files.length; i++) {
+                        uploadImage(files[i], this);
+                    }
+                }
+            }
+        });
+    }
+
+    function uploadImage(file) {
+        let data = new FormData();
+        data.append("file", file);
+        $.ajax({
+            url: '/upload/image',
+            cache: false, // 캐시 데이터 사용하지 않음.
+            contentType: false, // 파일 업로드 시, 헤더가 자도으로 설정외게끔.
+            processData: false, // 문자열로 바뀌지 않게끔 하는 설정
+            enctype : 'multipart/form-data',
+            data: data,
+            method: "post",
+            success: function(url) {
+                console.log(url)
+                insertImageToSummernote(url);
+            },
+            error: function(data) {
+                console.error(data);
+            }
+        });
+    }
+
+    function insertImageToSummernote(url) {
+        const img = document.createElement('img');
+        img.src = url;
+        img.style.width = '100%';
+        $('#boardContent').summernote('insertNode', img);
+    }
+</script>
 
 </body>
 </html>

@@ -60,7 +60,7 @@ public class BoardController {
     // 게시글 작성 처리
     @PostMapping("/write")
     public String write(BoardDTO board, @RequestParam("providerId") String providerId,
-                        List<MultipartFile> files) {
+                        @RequestParam("boardfiles") List<MultipartFile> files) {
         System.out.println(providerId);
 
         board.setProviderId(providerId);

@@ -46,8 +46,6 @@ public class UploadController {
 
             // 저장된 파일의 URL 반환
             String fileUrl = "/uploads/" + datePath + "/summernote/" + storedFileName;
-            System.out.println(fileUrl);
-            System.out.println("File saved to: " + filePath.toAbsolutePath().toString());
             return ResponseEntity.ok(fileUrl);
 
         } catch (IOException e) {

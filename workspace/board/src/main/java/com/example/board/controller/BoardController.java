@@ -93,7 +93,7 @@ public class BoardController {
 
     // 게시글 수정
     @PostMapping("/edit")
-    public String edit(BoardDTO board, List<MultipartFile> files) {
+    public String edit(BoardDTO board, @RequestParam("boardfiles") List<MultipartFile> files) {
         boardService.updateBoard(board, files);
 
         return "redirect:/board/detail/" + board.getBoardId();
